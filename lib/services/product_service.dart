@@ -1,0 +1,30 @@
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
+import '../constants.dart';
+import '../models/product_model.dart';
+
+class ProductService {
+  static const Set<String> menFashionCategories = {
+    'mens-shirts',
+    'mens-shoes',
+    'mens-watches',
+  };
+
+  Future<List<Product>> getAllProducts() async {
+    final response = await http.get(Uri.parse('$host/products?limit=100'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final List productsJson = data['products'] ?? [];
+
+      return productsJson
+          .map((json) => Product.fromJson(json))
+          .where((product) => menFashionCategories.contains(product.category))
+          .toList();
+    }
+
+    throw Exception('Failed to load products');
+  }
+}
