@@ -41,3 +41,11 @@ to the shop UI. Profile provides username and password controls, while Settings
 provides logout and delete-account controls. This separation keeps product,
 cart, and authentication responsibilities independent and makes the app easier
 to extend.
+
+## Lab Activity 6: Cloud Firestore Chat
+
+The Chat tab uses Cloud Firestore to show Firebase users, search by name or
+email, and store one-to-one conversations. Each conversation is saved in a
+shared chat room, with animated message bubbles and delivered/seen status.
+Products, cart, profile, and the existing Men Fashion interface remain in the
+same app.
