@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../constants.dart';
 import '../models/product_model.dart';
+import '../providers/cart_provider.dart';
 import '../services/product_service.dart';
 import '../widgets/custom_text.dart';
-import '../constants.dart';
 import 'product_detail_screen.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -91,7 +93,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 10,
                     mainAxisSpacing: 10,
-                    childAspectRatio: 0.74,
+                    childAspectRatio: 0.63,
                   ),
                   itemBuilder: (context, index) {
                     return _ProductCard(product: products[index]);
@@ -193,6 +195,17 @@ class _ProductCard extends StatelessWidget {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.icon(
+                      // Enhancement 3: each product can be sent to the cart
+                      // through the cart provider and DummyJSON add endpoint.
+                      onPressed: () => _addToCart(context, product),
+                      icon: const Icon(Icons.add_shopping_cart, size: 16),
+                      label: const Text('Add'),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -200,5 +213,27 @@ class _ProductCard extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _addToCart(BuildContext context, Product product) async {
+    try {
+      await context.read<CartProvider>().addProduct(product);
+
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${product.title} added to cart')));
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Unable to add item: $error')));
+    }
   }
 }

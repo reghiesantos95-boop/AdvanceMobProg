@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../constants.dart';
 import '../models/product_model.dart';
+import '../providers/cart_provider.dart';
 import '../widgets/custom_text.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -95,6 +97,17 @@ class ProductDetailScreen extends StatelessWidget {
               color: colors.onSurfaceVariant,
             ),
             const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                // Enhancement 3: detail screen also supports adding the
+                // selected product to the user cart.
+                onPressed: () => _addToCart(context),
+                icon: const Icon(Icons.add_shopping_cart),
+                label: const Text('Add to Cart'),
+              ),
+            ),
+            const SizedBox(height: 20),
             _DetailSection(
               title: 'Product Details',
               rows: [
@@ -126,6 +139,28 @@ class ProductDetailScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _addToCart(BuildContext context) async {
+    try {
+      await context.read<CartProvider>().addProduct(product);
+
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('${product.title} added to cart')));
+    } catch (error) {
+      if (!context.mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Unable to add item: $error')));
+    }
   }
 }
 

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/custom_text.dart';
+import 'cart_screen.dart';
+import 'chat_screen.dart';
 import 'product_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  static const String routeName = '/home';
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -22,7 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final titles = ['Men Fashion', 'Chat', 'Profile'];
+    final titles = ['Men Fashion', 'Chat', 'Cart', 'Profile'];
 
     return PopScope(
       canPop: false,
@@ -52,37 +57,50 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           children: const [
             ProductScreen(),
-            _PlaceholderScreen(
-              icon: Icons.chat_bubble_outline,
-              title: 'Chat',
-              message: 'Messages will appear here.',
-            ),
-            _PlaceholderScreen(
-              icon: Icons.person_outline,
-              title: 'Profile',
-              message: 'Profile details will appear here.',
-            ),
+            ChatScreen(),
+            CartScreen(),
+            ProfileScreen(),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          currentIndex: _selectedIndex,
-          onTap: _onTappedBar,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.checkroom),
-              label: 'Men Fashion',
+        bottomNavigationBar: BottomAppBar(
+          child: SizedBox(
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                _NavButton(
+                  icon: Icons.shopping_bag_outlined,
+                  label: 'Shop',
+                  selected: _selectedIndex == 0,
+                  onTap: () => _goToPage(0),
+                ),
+                _NavButton(
+                  icon: Icons.chat_bubble_outline,
+                  label: 'Chat',
+                  selected: _selectedIndex == 1,
+                  onTap: () => _goToPage(1),
+                ),
+                _NavButton(
+                  icon: Icons.shopping_cart_outlined,
+                  label: 'Cart',
+                  selected: _selectedIndex == 2,
+                  onTap: () => _goToPage(2),
+                ),
+                _NavButton(
+                  icon: Icons.person,
+                  label: 'Profile',
+                  selected: _selectedIndex == 3,
+                  onTap: () => _goToPage(3),
+                ),
+              ],
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  void _onTappedBar(int value) {
+  void _goToPage(int value) {
     setState(() {
       _selectedIndex = value;
     });
@@ -90,40 +108,39 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-class _PlaceholderScreen extends StatelessWidget {
-  const _PlaceholderScreen({
+class _NavButton extends StatelessWidget {
+  const _NavButton({
     required this.icon,
-    required this.title,
-    required this.message,
+    required this.label,
+    required this.selected,
+    required this.onTap,
   });
 
   final IconData icon;
-  final String title;
-  final String message;
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final color = selected ? colors.primary : colors.onSurfaceVariant;
 
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: onTap,
+      child: SizedBox(
+        width: 76,
+        height: 52,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 56, color: colors.primary),
-            const SizedBox(height: 12),
+            Icon(icon, color: color, size: 22),
             CustomText(
-              text: title,
-              fontSize: 20,
-              fontWeight: FontWeight.w700,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 6),
-            CustomText(
-              text: message,
-              fontSize: 14,
-              color: colors.onSurfaceVariant,
+              text: label,
+              fontSize: 10,
+              fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
+              color: color,
               textAlign: TextAlign.center,
             ),
           ],

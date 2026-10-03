@@ -11,3 +11,33 @@ The screens in `lib/screens` render the data and handle user interaction. `Produ
 The `ThemeProvider` in `lib/providers/theme_provider.dart` demonstrates app state management with Provider. It stores the current theme mode, notifies listeners when the mode changes, and lets `main.dart` rebuild `MaterialApp` with the correct light or dark theme. This separates app-wide state from temporary screen state, making the code easier to maintain.
 
 Overall, the design pattern separates responsibilities: models describe data, services fetch data, providers manage shared state, widgets handle reusable UI, and screens compose everything into the final user interface.
+
+## Lab Activity 4: Authentication API
+
+Lab 4 is connected in this same project so the shop, cart, and profile all use DummyJSON. After splash loading, the app restores a saved session from `shared_preferences` or opens the sign-in screen. `UserService` authenticates against DummyJSON (`/auth/login` or `/user/login`), then loads the full user profile from `/users/{id}`. `AuthProvider` keeps that user in memory and on disk.
+
+The Profile tab renders the saved user model instead of placeholder text. The Cart tab uses the authenticated user id to call `/carts/user/{id}`, and add-to-cart sends `/carts/add` for that same user. Signing out clears the saved session and returns to sign in.
+
+## Lab Activity 5: DummyJSON and Firebase Authentication
+
+This store keeps its product catalog, product details, cart, search, and existing
+shop interface while extending the same authentication layer with account
+management. DummyJSON remains the practice API: it authenticates the supplied
+username and password, then simulates account creation, updates, password
+changes, and deletion. The app persists the resulting session with
+`shared_preferences` and uses the DummyJSON user id to load the matching cart.
+
+Firebase Authentication is available alongside DummyJSON for real email/password
+accounts. The sign-in and sign-up screens let the user choose an account source.
+Firebase creates durable user accounts, manages secure tokens, and requires a
+recent password reauthentication before a password change or account deletion.
+Firebase users intentionally do not request a DummyJSON cart because their
+Firebase uid is unrelated to a DummyJSON user id; the existing product and cart
+UI remains available for items added during that session.
+
+`UserService` handles the DummyJSON HTTP calls, `FirebaseAuthService` handles
+Firebase user operations, and `AuthProvider` exposes one consistent session state
+to the shop UI. Profile provides username and password controls, while Settings
+provides logout and delete-account controls. This separation keeps product,
+cart, and authentication responsibilities independent and makes the app easier
+to extend.

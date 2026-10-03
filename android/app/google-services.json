@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "100722054728",
+    "project_id": "santos-advmblprog-10702",
+    "storage_bucket": "santos-advmblprog-10702.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100722054728:android:c58360a1849c07a09c2a7d",
+        "android_client_info": {
+          "package_name": "com.example.santos_advmobprog"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQwSUf2xVgJz9rDJcMLqxasyAzX1aGaxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
